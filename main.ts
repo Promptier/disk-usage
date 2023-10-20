@@ -16,11 +16,72 @@ export default class MyPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
-			// Called when the user clicks the icon.
-			new Notice('This is a notice!');
-		});
+		const ribbonIconEl = this.addRibbonIcon('pdf-file', 'Disk Usage Report', (evt: MouseEvent) => {
+			new Notice('Generating report');
+			let allFiles = app.vault.getFiles();
+			
+			let vaultSize = allFiles.reduce((a, i) => a + i.stat.size, 0);
+			console.log("Vault size: ",vaultSize);
+			 //let extensionTotals = {};
+
+			 //// excalidraw files are actually .md files so it requires some work around
+ //
+			 //files.forEach(file => {
+			   //if (file.basename.includes(".excalidraw")) {
+				 //if (extensionTotals["excalidraw"]) {
+					 //extensionTotals["excalidraw"] += file.stat.size;
+				 //} else {
+					 //extensionTotals["excalidraw"] = file.stat.size;
+				 //}	
+			   //}
+			   //if (extensionTotals[file.extension]) {
+				 //extensionTotals[file.extension] += file.stat.size;
+			   //} else {
+				 //extensionTotals[file.extension] = file.stat.size;
+			   //}
+			 //});
+			//console.log(extensionTotals);
+			function fileTypeReport(dir) {
+				let extensionTotals = {};
+
+				// excalidraw files are actually .md files so it requires some work around
+
+				files.forEach(file => {
+				  if (file.basename.includes(".excalidraw")) {
+					if (extensionTotals["excalidraw"]) {
+						extensionTotals["excalidraw"] += file.stat.size;
+					} else {
+						extensionTotals["excalidraw"] = file.stat.size;
+					}	
+				  }
+				  if (extensionTotals[file.extension]) {
+					extensionTotals[file.extension] += file.stat.size;
+				  } else {
+					extensionTotals[file.extension] = file.stat.size;
+				  }
+				});
+				return extensionTotals;
+			}
+			vaultFileTypeReport = fileTypeReport(allFiles);
+			console.log("Vault File Type Report: ",vaultFileTypeReport);
+
+			// allLoadedFiles returns all files and folders, then we check if it is top level
+			let allLoadedFiles = app.vault.getAllLoadedFiles() 
+			let firstLevelDirs = allLoadedFiles.filter(file => file.children && !file.path.includes("/"));
+			testr = fileTypeReport(firstLevelDirs[2]);
+			console.log("TEST DIR",testr);
+
+			// call like this: getAllFiles(firstLevelDirs[2])
+			function getAllFiles(dir, fileList = []) {
+			  dir.children.forEach(child => {
+				if (child.children) {
+				  getAllFiles(child, fileList);
+				} else {
+				  fileList.push(child);
+				}
+			  });
+			  return fileList;
+			  }
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
 
@@ -76,11 +137,13 @@ export default class MyPlugin extends Plugin {
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	}
+	)};
 
 	onunload() {
-
+		//pass
 	}
+
+	
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
