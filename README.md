@@ -1,33 +1,55 @@
 This plugin is currently in early development. It's purpose is simple, to manage the file space and size of your vault. Whether you want to know which folder is slowing your loading speed, or you are reaching your size limit for the sync service, this plugin will be helpful in managing your vault.
 
-UPDATE: All the bash/shell scripts are now deprecated and I am now rewriting this is Typescript and using Obsidian's own API. I realized otherwise I would have to rewrite the scripts in Powershell for windows, and figure out some odd solution for mobile. Not to mention to security concerns of requiring `sudo` for the `du` (disk usage) command, which the bash scripts rely on. Using Obsidian's API and all their built in methods is the clear answer and is crossplatform in it's nature. Despite not longer needing the them, I will keep the bash scripts here for now becuase I think they are cool.
+
 
 ### Features
 
-##### Track Folders
+##### Show Summary of Vault
+
+>[!abstract] Summary
+Total space taken up in Sync-Main is 5.98MB. PDF files take up the most space followed by JPG files. Largest folder is Academic followed by Personal. Keep in mind this does not include you hidden .obsidian folder and plugins.
+
+#### View Total Disk Usage by File Type and Folder
+
 ```mermaid
-pie title Disk Usage by Folder
-    "Software" : 964
-    "Daily" : 12
-    "Professional" : 188
-    "Academic" : 520
-    "Personal" : 228
-    "todo" : 364
+pie title Total Disk Usage by Filetype
+	"md" : 58581
+	"jpeg" : 8528
+	"gif" : 12303
+	"jpg" : 87401
+	"png" : 70515
+	"canvas" : 645
+	"pdf" : 99415
+	"excalidraw" : 12646
 ```
-##### Track Plugins
+
 ```mermaid
-pie title Disk Usage by Plugin
-    "obsidian-excalidraw-plugin" : 2780
-    "settings-search" : 32
-    "obsidian-discordrpc" : 220
-    "obsidian-full-calendar" : 2492
-    "disk-usage" : 32
-    "obsidian-hider" : 68
+pie title Total Disk Usage by Folder
+	"Academic" : 19488
+	"Personal" : 13646
+	"Professional" : 2309
+	"todo" : 5300
+	"Photos" : 25308
+	"Drawings" : 11363
 ```
-##### Track Filetypes
+#### View File Type by Folders
+
 ```mermaid
-pie title Disk Usage by File Type
-    ".md" : 5.7
-    ".jpg" : 1.2
-    ".pdf" : 3.2
+pie title Photos
+	"gif" : 1008
+	"jpg" : 2089
+	"png" : 408
+```
+
+```mermaid
+pie title Academic
+	"md" : 1008
+	"pdf" : 4089
+	"png" : 408
+```
+
+```mermaid
+pie title Drawings
+	"excalidraw" : 12646
+	"Canvas" : 1280
 ```
