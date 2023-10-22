@@ -53,3 +53,6 @@ pie title Drawings
 	"excalidraw" : 12646
 	"Canvas" : 1280
 ```
+### How To Use
+
+After installing and enabling this plugin, you will find a `Disk Usage Report` ribbon icon/button on the left of the screen. This will create a markdown file with all the graphs you see above. Once done, you can either save it somewhere or delete it. 
