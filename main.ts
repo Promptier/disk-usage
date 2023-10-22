@@ -18,6 +18,8 @@ export default class MyPlugin extends Plugin {
 
 		const ribbonIconEl = this.addRibbonIcon('pdf-file', 'Disk Usage Report', (evt: MouseEvent) => {
 			new Notice('Generating report');
+
+
 			function getAllFiles(dir, fileList = []) {
 				if (!Array.isArray(fileList)) {
 				console.error('fileList must be an array');
@@ -37,7 +39,6 @@ export default class MyPlugin extends Plugin {
 				let extensionTotals = {};
 
 				// excalidraw files are actually .md files so it requires some work around
-
 				dirs.forEach(file => {
 				  if (file.basename.includes(".excalidraw")) {
 					if (extensionTotals["excalidraw"]) {
@@ -56,15 +57,12 @@ export default class MyPlugin extends Plugin {
 			}
 			let allFiles = app.vault.getFiles();
 			let vaultSize = allFiles.reduce((a, i) => a + i.stat.size, 0);
-			console.log("VAULT SIZE: ",vaultSize);
+			let vaultSizeMB = (vaultSize/1000000).toFixed(2);
 
 			let allLoadedFiles = app.vault.getAllLoadedFiles() 
 			let firstLevelDirs = allLoadedFiles.filter(file => file.children && !file.path.includes("/"));
 			
-			//let test = getAllFiles(firstLevelDirs[1]);
 			const firstLevelDirFiles = firstLevelDirs.map(dir => getAllFiles(dir));
-			//spam = fileTypeReport(firstLevelDirFiles[2])
-			//console.log(spam); 
 
 			let reportByFolder = firstLevelDirs.reduce((acc, dir) => {
 			  const dirFiles = getAllFiles(dir);
@@ -73,37 +71,36 @@ export default class MyPlugin extends Plugin {
 			  return acc;
 			}, {});
 			let vaultReport = fileTypeReport(allFiles);
+			let sortedKeys = Object.keys(vaultReport).sort((a, b) => vaultReport[b] - vaultReport[a]);
+			let mostUsed = sortedKeys[0].toUpperCase();
+			let secondMostUsed = sortedKeys[1].toUpperCase();
 			console.log("VAULT REPORT",vaultReport);
 			console.log("REPORT BY FOLDER  ",reportByFolder);
-			//let firstLevelDirFiles = firstLevelDirs.map(dir => {getAllFiles(dir)});
-			//console.log(firstLevelDirFiles); 
+			let vaultName = app.vault.getName()
+			let reportBrief = `>[!abstract] Summary\nTotal space taken up in ${vaultName} is ${vaultSizeMB}MB. ${mostUsed} files take up the most space followed by ${secondMostUsed} files. Keep in mind this does not include you hidden .obsidian folder and plugins.\n\n`;
+			let vaultReportBrief = "```mermaid\npie title Total Disk Usage by Filetype\n"
 
-
-			  //excalidraw files are actually .md files so it requires some work around
- 
-			 //let extensionTotals = {};
-			 //allFiles.forEach(file => {
-			   //if (file.basename.includes(".excalidraw")) {
-				 //if (extensionTotals["excalidraw"]) {
-					 //extensionTotals["excalidraw"] += file.stat.size;
-				 //} else {
-					 //extensionTotals["excalidraw"] = file.stat.size;
-				 //}	
-			   //}
-			   //if (extensionTotals[file.extension]) {
-				 //extensionTotals[file.extension] += file.stat.size;
-			   //} else {
-				 //extensionTotals[file.extension] = file.stat.size;
-			   //}
-			 //});
-			//console.log(extensionTotals);
-			 ////allLoadedFiles returns all files and folders, then we check if it is top level
-			//console.log("TEST DIR",testr);
-//
-			//// call like this: getAllFiles(firstLevelDirs[2])
-			//vaultFileTypeReport = fileTypeReport(firstLevelDirs);
-			//console.log("Vault File Type Report: ",vaultFileTypeReport);
-//
+			Object.keys(vaultReport).forEach(key => {
+				vaultReportBrief += `\t"${key}" : ${vaultReport[key]}\n`;
+			});
+			console.log("BEFORE LOOP",reportByFolder);	
+			let foldersReportBrief = ""
+			Object.keys(reportByFolder).forEach(key => {
+				let tmp = `\`\`\`mermaid\npie title ${key}\n`
+				//console.log(title);
+				//console.log(reportByFolder[key]);
+				Object.keys(reportByFolder[key]).forEach(k => {
+					tmp +=  `\t"${k}" : ${reportByFolder[key][k]}\n`
+					//(k,reportByFolder[key][k]);
+				});
+				tmp += "```\n\n";
+				//console.log(tmp);
+				foldersReportBrief += tmp;
+			});
+			console.log(foldersReportBrief);
+			vaultReportBrief += "```\n"
+			let finalReport = reportBrief + vaultReportBrief + foldersReportBrief	
+			app.vault.create("finalReport2.md",finalReport);
 
 		});
 		// Perform additional things with the ribbon
