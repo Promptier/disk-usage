@@ -63,11 +63,11 @@ export default class MyPlugin extends Plugin {
 				return arr.reduce((a, i) => a + i.stat.size, 0);
 			}
 
-			let allFiles = app.vault.getFiles();
+			let allFiles = this.app.vault.getFiles();
 			let vaultSize = getSize(allFiles); // in bytes
 			let vaultSizeMB = (vaultSize/1000000).toFixed(2); //two decimal points
 
-			let allLoadedFiles = app.vault.getAllLoadedFiles() 
+			let allLoadedFiles = this.app.vault.getAllLoadedFiles() 
 			let firstLevelDirs = allLoadedFiles.filter(file => file.children && !file.path.includes("/"));
 			let firstLevelDirFiles = firstLevelDirs.reduce((acc, dir) => {
 			  acc[dir.name] = getAllFiles(dir);
@@ -93,7 +93,7 @@ export default class MyPlugin extends Plugin {
 			let mostUsedFileType = sortedFileTypeSizes[0].toUpperCase();
 			let secondMostUsedFileType = sortedFileTypeSizes[1].toUpperCase();
 
-			let vaultName = app.vault.getName()
+			let vaultName = this.app.vault.getName()
 			let reportBrief = `>[!abstract] Summary\nTotal space taken up in ${vaultName} is ${vaultSizeMB}MB. ${mostUsedFileType} files take up the most space followed by ${secondMostUsedFileType} files. Largest folder is ${mostUsedFolder} followed by ${secondMostUsedFolder}. Keep in mind this does not include you hidden .obsidian folder and plugins.\n\n## Vault Total\n`;
 
 			let vaultReportBrief = "```mermaid\npie title Total Disk Usage by Filetype\n"
@@ -130,7 +130,7 @@ export default class MyPlugin extends Plugin {
 			});
 			vaultReportBrief += "```\n"
 			let finalReport = reportBrief + vaultReportBrief + folderSizeReportBrief + foldersReportBrief	
-			app.vault.create("finalReport.md",finalReport);
+			this.app.vault.create("finalReport.md",finalReport);
 
 		});
 		// Perform additional things with the ribbon
@@ -192,6 +192,7 @@ export default class MyPlugin extends Plugin {
 
 	onunload() {
 		//pass
+		//since there were no event listeners or anything similar it seemed there was not anythin to unload
 	}
 
 	
