@@ -18,35 +18,27 @@ export default class MyPlugin extends Plugin {
 
 		const ribbonIconEl = this.addRibbonIcon('pdf-file', 'Disk Usage Report', (evt: MouseEvent) => {
 			new Notice('Generating report');
-			let allFiles = app.vault.getFiles();
-			
-			let vaultSize = allFiles.reduce((a, i) => a + i.stat.size, 0);
-			console.log("Vault size: ",vaultSize);
-			 //let extensionTotals = {};
+			function getAllFiles(dir, fileList = []) {
+				if (!Array.isArray(fileList)) {
+				console.error('fileList must be an array');
+				return;
+			    }
+			  dir.children.forEach(child => {
+				if (child.children) {
+				  getAllFiles(child, fileList);
+				} else {
+				  fileList.push(child);
+				}
+			  });
+			  return fileList;
+			  }
 
-			 //// excalidraw files are actually .md files so it requires some work around
- //
-			 //files.forEach(file => {
-			   //if (file.basename.includes(".excalidraw")) {
-				 //if (extensionTotals["excalidraw"]) {
-					 //extensionTotals["excalidraw"] += file.stat.size;
-				 //} else {
-					 //extensionTotals["excalidraw"] = file.stat.size;
-				 //}	
-			   //}
-			   //if (extensionTotals[file.extension]) {
-				 //extensionTotals[file.extension] += file.stat.size;
-			   //} else {
-				 //extensionTotals[file.extension] = file.stat.size;
-			   //}
-			 //});
-			//console.log(extensionTotals);
-			function fileTypeReport(dir) {
+			function fileTypeReport(dirs) {
 				let extensionTotals = {};
 
 				// excalidraw files are actually .md files so it requires some work around
 
-				files.forEach(file => {
+				dirs.forEach(file => {
 				  if (file.basename.includes(".excalidraw")) {
 					if (extensionTotals["excalidraw"]) {
 						extensionTotals["excalidraw"] += file.stat.size;
@@ -62,26 +54,58 @@ export default class MyPlugin extends Plugin {
 				});
 				return extensionTotals;
 			}
-			vaultFileTypeReport = fileTypeReport(allFiles);
-			console.log("Vault File Type Report: ",vaultFileTypeReport);
+			let allFiles = app.vault.getFiles();
+			let vaultSize = allFiles.reduce((a, i) => a + i.stat.size, 0);
+			console.log("VAULT SIZE: ",vaultSize);
 
-			// allLoadedFiles returns all files and folders, then we check if it is top level
 			let allLoadedFiles = app.vault.getAllLoadedFiles() 
 			let firstLevelDirs = allLoadedFiles.filter(file => file.children && !file.path.includes("/"));
-			testr = fileTypeReport(firstLevelDirs[2]);
-			console.log("TEST DIR",testr);
+			
+			//let test = getAllFiles(firstLevelDirs[1]);
+			const firstLevelDirFiles = firstLevelDirs.map(dir => getAllFiles(dir));
+			//spam = fileTypeReport(firstLevelDirFiles[2])
+			//console.log(spam); 
 
-			// call like this: getAllFiles(firstLevelDirs[2])
-			function getAllFiles(dir, fileList = []) {
-			  dir.children.forEach(child => {
-				if (child.children) {
-				  getAllFiles(child, fileList);
-				} else {
-				  fileList.push(child);
-				}
-			  });
-			  return fileList;
-			  }
+			let reportByFolder = firstLevelDirs.reduce((acc, dir) => {
+			  const dirFiles = getAllFiles(dir);
+			  const report = fileTypeReport(dirFiles);
+			  acc[dir.name] = report;
+			  return acc;
+			}, {});
+			let vaultReport = fileTypeReport(allFiles);
+			console.log("VAULT REPORT",vaultReport);
+			console.log("REPORT BY FOLDER  ",reportByFolder);
+			//let firstLevelDirFiles = firstLevelDirs.map(dir => {getAllFiles(dir)});
+			//console.log(firstLevelDirFiles); 
+
+
+			  //excalidraw files are actually .md files so it requires some work around
+ 
+			 //let extensionTotals = {};
+			 //allFiles.forEach(file => {
+			   //if (file.basename.includes(".excalidraw")) {
+				 //if (extensionTotals["excalidraw"]) {
+					 //extensionTotals["excalidraw"] += file.stat.size;
+				 //} else {
+					 //extensionTotals["excalidraw"] = file.stat.size;
+				 //}	
+			   //}
+			   //if (extensionTotals[file.extension]) {
+				 //extensionTotals[file.extension] += file.stat.size;
+			   //} else {
+				 //extensionTotals[file.extension] = file.stat.size;
+			   //}
+			 //});
+			//console.log(extensionTotals);
+			 ////allLoadedFiles returns all files and folders, then we check if it is top level
+			//console.log("TEST DIR",testr);
+//
+			//// call like this: getAllFiles(firstLevelDirs[2])
+			//vaultFileTypeReport = fileTypeReport(firstLevelDirs);
+			//console.log("Vault File Type Report: ",vaultFileTypeReport);
+//
+
+		});
 		// Perform additional things with the ribbon
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
 
@@ -137,7 +161,7 @@ export default class MyPlugin extends Plugin {
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	)};
+	};
 
 	onunload() {
 		//pass
