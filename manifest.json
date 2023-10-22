@@ -1,11 +1,11 @@
 {
-	"id": "sample-plugin",
+	"id": "disk-usage",
 	"name": "Disk Usage",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Measures disk usage for tracking size of folders, file types and plugins.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "Measures disk usage for tracking size of folders and file types.",
+	"author": "Promptier",
+	"authorUrl": "https://promptier.io/Welcome",
 	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
