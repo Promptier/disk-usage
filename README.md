@@ -6,8 +6,8 @@ This plugin is currently in early development. It's purpose is simple, to manage
 
 ##### Show Summary of Vault
 
->[!abstract] Summary
-Total space taken up in Sync-Main is 5.98MB. PDF files take up the most space followed by JPG files. Largest folder is Academic followed by Personal. Keep in mind this does not include you hidden .obsidian folder and plugins.
+![image](https://github.com/Promptier/disk-usage/assets/143894113/7fa0824c-85b8-4a28-8c84-c799195c51fe)
+
 
 #### View Total Disk Usage by File Type and Folder
 
