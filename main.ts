@@ -19,6 +19,7 @@ export default class MyPlugin extends Plugin {
 		const ribbonIconEl = this.addRibbonIcon('pdf-file', 'Disk Usage Report', (evt: MouseEvent) => {
 			new Notice('Generating report');
 
+			// THREE GENERAL FUNCTIONS
 
 			function getAllFiles(dir, fileList = []) {
 				if (!Array.isArray(fileList)) {
@@ -34,7 +35,8 @@ export default class MyPlugin extends Plugin {
 			  });
 			  return fileList;
 			  }
-
+			
+			// returns an object with key as name of extension/file type and value as size in bytes
 			function fileTypeReport(dirs) {
 				let extensionTotals = {};
 
@@ -54,15 +56,55 @@ export default class MyPlugin extends Plugin {
 				  }
 				});
 				return extensionTotals;
+
+			// MUST BE AN ARRAY OF FILES, use getAllFiles() before getSize(), except for app.vault.getfiles(), which already returns just files, everything else return objects, we have to use getAllFiles() to dig through these objects
 			}
+			function getSize(arr) {
+				return arr.reduce((a, i) => a + i.stat.size, 0);
+			}
+
 			let allFiles = app.vault.getFiles();
-			let vaultSize = allFiles.reduce((a, i) => a + i.stat.size, 0);
-			let vaultSizeMB = (vaultSize/1000000).toFixed(2);
+			let vaultSize = getSize(allFiles); // in bytes
+			let vaultSizeMB = (vaultSize/1000000).toFixed(2); //two decimal points
 
 			let allLoadedFiles = app.vault.getAllLoadedFiles() 
 			let firstLevelDirs = allLoadedFiles.filter(file => file.children && !file.path.includes("/"));
-			
-			const firstLevelDirFiles = firstLevelDirs.map(dir => getAllFiles(dir));
+			let firstLevelDirFiles = firstLevelDirs.reduce((acc, dir) => {
+			  acc[dir.name] = getAllFiles(dir);
+			  return acc;
+			}, {});
+			let firstLevelDirSize = {};
+			Object.keys(firstLevelDirFiles).forEach(key => {
+				let size = getSize(firstLevelDirFiles[key])
+				  firstLevelDirSize[key] = size;
+			});
+			console.log(firstLevelDirSize);
+
+			let vaultReport = fileTypeReport(allFiles);
+
+			let sortedFolderSizes = Object.entries(firstLevelDirSize).sort((a, b) => b[1] - a[1]);
+			//let sortedFolderSizes = Object.keys(firstLevelDirSize).sort((a, b) => vaultReport[b] - vaultReport[a]);
+			console.log("FOLDERS",sortedFolderSizes);
+			let mostUsedFolder = sortedFolderSizes[0][0];
+			let secondMostUsedFolder = sortedFolderSizes[1][0];
+
+
+			let sortedFileTypeSizes = Object.keys(vaultReport).sort((a, b) => vaultReport[b] - vaultReport[a]);
+			let mostUsedFileType = sortedFileTypeSizes[0].toUpperCase();
+			let secondMostUsedFileType = sortedFileTypeSizes[1].toUpperCase();
+
+			let vaultName = app.vault.getName()
+			let reportBrief = `>[!abstract] Summary\nTotal space taken up in ${vaultName} is ${vaultSizeMB}MB. ${mostUsedFileType} files take up the most space followed by ${secondMostUsedFileType} files. Largest folder is ${mostUsedFolder} followed by ${secondMostUsedFolder}. Keep in mind this does not include you hidden .obsidian folder and plugins.\n\n## Vault Total\n`;
+
+			let vaultReportBrief = "```mermaid\npie title Total Disk Usage by Filetype\n"
+
+
+			let folderSizeReportBrief = "```mermaid\npie title Total Disk Usage by Folder\n"
+			Object.keys(firstLevelDirSize).forEach(key => {
+				folderSizeReportBrief += `\t"${key}" : ${firstLevelDirSize[key]}\n`;
+			});
+			folderSizeReportBrief += "```\n\n"
+
 
 			let reportByFolder = firstLevelDirs.reduce((acc, dir) => {
 			  const dirFiles = getAllFiles(dir);
@@ -70,21 +112,10 @@ export default class MyPlugin extends Plugin {
 			  acc[dir.name] = report;
 			  return acc;
 			}, {});
-			let vaultReport = fileTypeReport(allFiles);
-			let sortedKeys = Object.keys(vaultReport).sort((a, b) => vaultReport[b] - vaultReport[a]);
-			let mostUsed = sortedKeys[0].toUpperCase();
-			let secondMostUsed = sortedKeys[1].toUpperCase();
-			console.log("VAULT REPORT",vaultReport);
-			console.log("REPORT BY FOLDER  ",reportByFolder);
-			let vaultName = app.vault.getName()
-			let reportBrief = `>[!abstract] Summary\nTotal space taken up in ${vaultName} is ${vaultSizeMB}MB. ${mostUsed} files take up the most space followed by ${secondMostUsed} files. Keep in mind this does not include you hidden .obsidian folder and plugins.\n\n`;
-			let vaultReportBrief = "```mermaid\npie title Total Disk Usage by Filetype\n"
-
 			Object.keys(vaultReport).forEach(key => {
 				vaultReportBrief += `\t"${key}" : ${vaultReport[key]}\n`;
 			});
-			console.log("BEFORE LOOP",reportByFolder);	
-			let foldersReportBrief = ""
+			let foldersReportBrief = "## Folder By Filetype\n"
 			Object.keys(reportByFolder).forEach(key => {
 				let tmp = `\`\`\`mermaid\npie title ${key}\n`
 				//console.log(title);
@@ -97,10 +128,9 @@ export default class MyPlugin extends Plugin {
 				//console.log(tmp);
 				foldersReportBrief += tmp;
 			});
-			console.log(foldersReportBrief);
 			vaultReportBrief += "```\n"
-			let finalReport = reportBrief + vaultReportBrief + foldersReportBrief	
-			app.vault.create("finalReport2.md",finalReport);
+			let finalReport = reportBrief + vaultReportBrief + folderSizeReportBrief + foldersReportBrief	
+			app.vault.create("finalReport.md",finalReport);
 
 		});
 		// Perform additional things with the ribbon
