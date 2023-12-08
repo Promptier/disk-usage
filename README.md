@@ -7,21 +7,21 @@ This plugin is currently in early development. It's purpose is simple, to manage
 
 ##### Show Summary of Vault
 
-<img src="https://github.com/Promptier/disk-usage/assets/143894113/7fa0824c-85b8-4a28-8c84-c799195c51fe" width="70%" height="70%">
+<img src="https://github.com/Promptier/disk-usage/assets/143894113/7fa0824c-85b8-4a28-8c84-c799195c51fe">
 
 #### View Total Size of Each File Type and Folder
 
-<img src="https://github.com/Promptier/disk-usage/assets/143894113/efdcfb8b-3b4b-460e-a8af-8f016851a103" width="50%" height="50%">
+<img src="https://github.com/Promptier/disk-usage/assets/143894113/efdcfb8b-3b4b-460e-a8af-8f016851a103" width="70%" height="70%">
 
-<img src="https://github.com/Promptier/disk-usage/assets/143894113/25e1acee-7a02-4afc-90c8-b425e5cb3ca8" width="50%" height="50%">
+<img src="https://github.com/Promptier/disk-usage/assets/143894113/25e1acee-7a02-4afc-90c8-b425e5cb3ca8" width="70%" height="70%">
 
 #### Size of File Type by Folders
 
-<img src="https://github.com/Promptier/disk-usage/assets/143894113/09788a6e-d4ab-4576-b598-67cf99ec687f" width="50%" height="50%">
+<img src="https://github.com/Promptier/disk-usage/assets/143894113/09788a6e-d4ab-4576-b598-67cf99ec687f" width="70%" height="70%">
 
-<img src="https://github.com/Promptier/disk-usage/assets/143894113/e8aad93e-2905-4503-ba2c-3c1bd1388904" width="50%" height="50%">
+<img src="https://github.com/Promptier/disk-usage/assets/143894113/e8aad93e-2905-4503-ba2c-3c1bd1388904" width="70%" height="70%">
 
-<img src="https://github.com/Promptier/disk-usage/assets/143894113/1d323e4e-c855-4412-8e9c-5807a351b261" width="50%" height="50%">
+<img src="https://github.com/Promptier/disk-usage/assets/143894113/1d323e4e-c855-4412-8e9c-5807a351b261" width="70%" height="70%">
 
 
 ### How To Use
