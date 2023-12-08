@@ -12,48 +12,20 @@ This plugin is currently in early development. It's purpose is simple, to manage
 
 #### View Total Size of Each File Type and Folder
 
-```mermaid
-pie title Aggregated Size of Filetypes
-	"md" : 58581
-	"jpeg" : 8528
-	"gif" : 12303
-	"jpg" : 87401
-	"png" : 70515
-	"canvas" : 645
-	"pdf" : 99415
-	"excalidraw" : 12646
-```
+![fletypes](https://github.com/Promptier/disk-usage/assets/143894113/efdcfb8b-3b4b-460e-a8af-8f016851a103)
 
-```mermaid
-pie title Aggregated Size of Folders
-	"Academic" : 19488
-	"Personal" : 13646
-	"Professional" : 2309
-	"todo" : 5300
-	"Photos" : 25308
-	"Drawings" : 11363
-```
+![folders](https://github.com/Promptier/disk-usage/assets/143894113/25e1acee-7a02-4afc-90c8-b425e5cb3ca8)
+
+
 #### Size of File Type by Folders
 
-```mermaid
-pie title Photos
-	"gif" : 1008
-	"jpg" : 2089
-	"png" : 408
-```
+![photos](https://github.com/Promptier/disk-usage/assets/143894113/09788a6e-d4ab-4576-b598-67cf99ec687f)
 
-```mermaid
-pie title Academic
-	"md" : 1008
-	"pdf" : 4089
-	"png" : 408
-```
+![academic](https://github.com/Promptier/disk-usage/assets/143894113/e8aad93e-2905-4503-ba2c-3c1bd1388904)
 
-```mermaid
-pie title Drawings
-	"excalidraw" : 12646
-	"Canvas" : 1280
-```
+![drawings](https://github.com/Promptier/disk-usage/assets/143894113/1d323e4e-c855-4412-8e9c-5807a351b261)
+
+
 ### How To Use
 
 After installing and enabling this plugin, you will find a `Disk Usage Report` ribbon icon/button on the left of the screen. This will create a markdown file with all the graphs you see above. Once done, you can either save it somewhere or delete it. 
